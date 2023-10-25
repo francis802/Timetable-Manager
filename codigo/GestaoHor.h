@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <queue>
+#include <stack>
 #include "Estudante.h"
 #include "Pedido.h"
 
@@ -95,6 +96,11 @@ public:
     void processPedidos();
 
     /**
+     * Reverte a última mudança efetuada no sistema.
+     */
+    void undoHistory();
+
+    /**
      * Verifica se há um conflito no horário de um estudante se for adicionada uma determinada turma de uma UC. Complexidade O(n^3).
      *
      * @param estudante Estudante com o horário a verificar.
@@ -123,6 +129,7 @@ private:
     set<Estudante, cmp>students_byname;
     queue<vector<pair<char,Pedido>>> pedidos;
     list<vector<pair<char,Pedido>>> failed;
+    stack<vector<pair<char,Pedido>>> history;
     const static int cap = 30;
 
 };

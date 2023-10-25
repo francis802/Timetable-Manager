@@ -187,8 +187,61 @@ void GestaoHor::processPedidos() {
             }
             if (stopLoop) break;
         }
+        if(!stopLoop){
+            history.push(pedidos.front());
+        }
         pedidos.pop();
     }
+}
+
+void GestaoHor::undoHistory() {
+    Pedido ready_pedido = history.top()[0].second;
+    int stuCode = ready_pedido.getCode();
+    Estudante backup = Estudante();
+    backup.setCode(stuCode);
+    auto it1 = students.find(backup);
+    backup = *it1;
+    bool stopLoop = false;
+
+    for (pair<char,Pedido> pedido : history.top()){
+        switch (pedido.first) {
+            case 'a': {
+                removeStudentUCClass(pedido.second);
+                break;
+            }
+            case 'r':{
+                if (!addStudentUCClass(pedido.second)){
+                    stopLoop = true;
+                    Estudante del = Estudante();
+                    del.setCode(stuCode);
+                    auto it_del = students.find(del);
+                    if (it_del == students.end()){
+                        students.insert(backup);
+                        students_byname.insert(backup);
+                    } else {
+                        del = *it_del;
+                        auto it_del_name = students_byname.find(del);
+                        students.erase(it_del);
+                        students_byname.erase(it_del_name);
+                        students.insert(backup);
+                        students_byname.insert(backup);
+                    }
+                }
+                break;
+            }
+        }
+        if (stopLoop) break;
+    }
+    if(stopLoop){
+        ofstream out;
+        out.open("../log_failed_changes.txt",std::ios_base::app);
+        cout << "Erro: Não foi possível reverter o histórico de mudanças efetuadas no estudante " << stuCode << endl;
+        out << "Erro: Não foi possível reverter o histórico de mudanças efetuadas no estudante " << stuCode << endl;
+        cout << "Não foram efetuadas mudanças no horário do estudante\n\n";
+        out << "Não foram efetuadas mudanças no horário do estudante\n\n\n";
+        out.close();
+    }
+    history.pop();
 }
 
 const set<Estudante> &GestaoHor::getStudents() const {
@@ -203,7 +256,6 @@ const set<UCTurma> &GestaoHor::getAulas() const {
     return aulas;
 }
 
-//TODO Em princípio está tudo bem, mas fazer mais testes
 bool GestaoHor::classConflict(Estudante estudante, UCTurma new_uct) {
     vector<Aula> new_tppl;
     for (Aula a:new_uct.getTimetable()){

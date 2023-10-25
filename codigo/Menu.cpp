@@ -49,6 +49,7 @@ bool Menu::alterarMenu() {
         cout << "\t2 - Adicionar estudante a uma turma/UC\n";
         cout << "\t3 - Alterar turma/UC de um estudante\n";
         cout << "\t4 - Alterar conjunto de turmas/UCs de um estudante\n";
+        cout << "\t5 - Reverter última mudança efetuada no sistema\n";
 
         cout << "\n type 'q' to quit, 'r' to return\n";
         cout << "==================================================\n";
@@ -142,6 +143,9 @@ bool Menu::alterarMenu() {
             }
             if (!waiting.empty())
                 gestao.addPedidos(waiting);
+        }
+        else if (option1 == "5") {
+            gestao.undoHistory();
         }
         else if (option1 == "q") {
             gestao.processPedidos();

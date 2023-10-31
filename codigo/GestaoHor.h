@@ -8,6 +8,7 @@
 #include <stack>
 #include "Estudante.h"
 #include "Pedido.h"
+#include <algorithm>
 
 using namespace std;
 

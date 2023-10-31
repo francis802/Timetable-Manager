@@ -195,6 +195,10 @@ void GestaoHor::processPedidos() {
 }
 
 void GestaoHor::undoHistory() {
+    if(history.empty()){
+        std::cout << "No history to be undone!\n\n";
+        return;
+    }
     Pedido ready_pedido = history.top()[0].second;
     int stuCode = ready_pedido.getCode();
     Estudante backup = Estudante();
@@ -203,7 +207,11 @@ void GestaoHor::undoHistory() {
     backup = *it1;
     bool stopLoop = false;
 
-    for (pair<char,Pedido> pedido : history.top()){
+    std::vector<pair<char,Pedido>> recent_history = history.top();
+
+    std::sort(recent_history.begin(),recent_history.end(),[](pair<char,Pedido>p1,pair<char,Pedido>p2){return p1.first<p2.first;});
+
+    for (pair<char,Pedido> pedido : recent_history){
         switch (pedido.first) {
             case 'a': {
                 removeStudentUCClass(pedido.second);

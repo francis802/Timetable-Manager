@@ -382,7 +382,7 @@ bool GestaoHor::addStudentUCClass(Pedido pedido) {
         if (i.first != 0 && i.first < min)
             min = i.first;
     }
-    if (ocupacao[stoi(num_turma) - 1].first > cap || abs(ocupacao[stoi(num_turma) - 1].first - min) >= 4){
+    if (ocupacao[stoi(num_turma) - 1].first > cap || abs(ocupacao[stoi(num_turma) - 1].first - min) > 4){
         failed.push_back(pedidos.front());
         ofstream out;
         out.open("../log_failed_changes.txt",std::ios_base::app);
